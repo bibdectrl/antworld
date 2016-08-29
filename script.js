@@ -69,6 +69,7 @@ function AntWorld(width, height){
   this.width = width;
   this.height = height;
   this.grid = [];
+  this.released = true;
   for (var x = 0; x < this.width; x++){
     this.grid[x] = []
     for (var y = 0; y < this.height; y++){
@@ -79,6 +80,7 @@ function AntWorld(width, height){
   this.ants.push(new Ant(Math.floor(Math.random() * this.width), Math.floor(Math.random() * this.height), this.grid));
 
   this.addAnt = function(x, y){
+    if (this.grid[x][y] !== undefined)
     this.ants.push(new Ant(x, y, this.grid));
   }
 
@@ -120,7 +122,15 @@ function draw(){
   antWorld.update();
   antWorld.show();
   if (mouseIsPressed){
-    antWorld.addAnt(Math.floor(mouseX / CELLSIZE),
-                    Math.floor(mouseY / CELLSIZE));
+    if (antWorld.released) {
+      antWorld.released = false;
+      var nx = Math.floor(mouseX / CELLSIZE);
+      var ny = Math.floor(mouseY / CELLSIZE);
+      if (nx >= 0 && nx < WIDTH && ny >= 0 && ny < HEIGHT){
+        antWorld.addAnt(nx, ny);
+      }
+    }
+  } else {
+    antWorld.released = true;
   }
 }
